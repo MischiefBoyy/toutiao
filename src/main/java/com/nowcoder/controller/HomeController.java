@@ -10,6 +10,7 @@ import com.nowcoder.model.HostHolder;
 import com.nowcoder.model.News;
 import com.nowcoder.model.ViewObject;
 import com.nowcoder.service.NewsService;
+import com.nowcoder.service.UserService;
 
 @Controller
 public class HomeController {
@@ -17,11 +18,18 @@ public class HomeController {
 	private NewsService newsService;
 	@Autowired
 	private HostHolder holder;
-	
-	
-	private List<ViewObject> getNews(int userId, int offset, int limit){
-		List<News> list=newsService.getNewsList(userId,offset,limit);
+	@Autowired
+	private UserService userService;
+
+	private List<ViewObject> getNews(int userId, int offset, int limit) {
+		List<News> list = newsService.getNewsList(userId, offset, limit);
 		List<ViewObject> vos = new ArrayList<>();
-		return null;
+		for (News news : list) {
+			ViewObject viewObject = new ViewObject();
+			viewObject.set("news", news);
+			//viewObject.set("user", userService.getUser(news.getUserId()));
+			vos.add(viewObject);
+		}
+		return vos;
 	}
 }
