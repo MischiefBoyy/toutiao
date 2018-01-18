@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerAdapter;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -36,7 +37,9 @@ public class PassInterceptor implements HandlerInterceptor {
 	@Override
 	public void postHandle(HttpServletRequest arg0, HttpServletResponse arg1, Object arg2, ModelAndView modelAndView)
 			throws Exception {
+		//System.out.println("------进入最后的设置");
 		if (modelAndView != null && hostHolder.getUser() != null) {
+			System.out.println(hostHolder.getUser().getName());
             modelAndView.addObject("user", hostHolder.getUser());
         }
 		
@@ -44,12 +47,14 @@ public class PassInterceptor implements HandlerInterceptor {
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object arg2) throws Exception {
+		//System.out.println("-------进入拦截器1");
 		String ticket=null;
 		Cookie[] cookies=request.getCookies();
 		if(cookies != null) {
 			for(Cookie cookie:cookies) {
 				if("ticket".equals(cookie.getName())) {
 					ticket=cookie.getValue();
+					//System.out.println("----------------ticket:"+ticket);
 					break;
 				}
 			}

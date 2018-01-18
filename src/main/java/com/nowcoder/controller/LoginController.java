@@ -47,7 +47,7 @@ public class LoginController {
 	@ResponseBody
 	public String login(@RequestParam("username") String username
 						, @RequestParam("password") String password
-						, @RequestParam("remember") int remember
+						, @RequestParam("rember") int remember
 						,HttpServletResponse response) {
 		if (StringUtils.isEmpty(username)) {
 			return ToutiaoUtil.getJSONString(1, "用户名不能为空。");
@@ -55,32 +55,33 @@ public class LoginController {
 		if (StringUtils.isEmpty(password)) {
 			return ToutiaoUtil.getJSONString(1, "密码不能为空。");
 		}
-		try {
+		try {	
 			Map<String, Object> map=userService.login(username, password, remember);
 			if(map.containsKey("ticket")) {
 				Cookie cookie=new Cookie("ticket", map.get("ticket").toString());
+				cookie.setPath("/");
 				if(remember > 0) {
 					cookie.setMaxAge(3600 * 24 * 7);
 				}else {
 					cookie.setMaxAge(3600 * 24);
 				}
 				response.addCookie(cookie);
-				return ToutiaoUtil.getJSONString(0, "注册成功");
+				return ToutiaoUtil.getJSONString(0, "登录成功");
 			}else {
 				return ToutiaoUtil.getJSONString(1, map);
 			}
 		} catch (Exception e) {
 			logger.error("注册异常："+e.getMessage());
-			return ToutiaoUtil.getJSONString(1, "注册异常");
+			return ToutiaoUtil.getJSONString(1, "登录异常");
 		}
 	}
 	
 	
-	@RequestMapping(path = { "/logout/" }, method = { RequestMethod.GET,RequestMethod.POST })
-	public String logout(@CookieValue("ticket") String ticket) {
-		userService.logout(ticket);
-		return "redirect:/";
-	}
+//	@RequestMapping(path = { "/logout/" }, method = { RequestMethod.GET,RequestMethod.POST })
+//	public String logout(@CookieValue("ticket") String ticket) {
+//		userService.logout(ticket);
+//		return "redirect:/";
+//	}
 	
 	
 }

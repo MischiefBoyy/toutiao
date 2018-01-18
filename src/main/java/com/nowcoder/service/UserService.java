@@ -90,6 +90,7 @@ public class UserService {
 		ticket.setStatus(0);// 0代表可以登录 1代表不能 登录
 		ticket.setUserId(userId);
 		ticket.setTicket(UUID.randomUUID().toString().replaceAll("-", ""));
+		ticketDao.addTicket(ticket);
 		return ticket.getTicket();
 	}
 }

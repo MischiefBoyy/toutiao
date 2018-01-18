@@ -8,8 +8,8 @@ import java.util.Date;
 public class Comment {
     private int id;
     private int userId;
-    private int entityId;
-    private int entityType;
+    private int entityId;//如果是对新闻的评论，那么该id则为新闻的id。如果是对评论的评论，那么该id则为评论的id
+    private int entityType;//评论的类型
     private String content;
     private Date createdDate;
     private int status;

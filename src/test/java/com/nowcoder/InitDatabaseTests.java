@@ -10,16 +10,21 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.nowcoder.dao.CommentDAO;
+import com.nowcoder.dao.MessageDAO;
 import com.nowcoder.dao.NewsDAO;
 import com.nowcoder.dao.UserDAO;
+import com.nowcoder.model.Comment;
+import com.nowcoder.model.EntityType;
 import com.nowcoder.model.News;
 import com.nowcoder.model.User;
+import com.nowcoder.service.MessageService;
 import com.nowcoder.util.ToutiaoUtil;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = ToutiaoApplication.class)
-@Sql("/init-schema.sql")
+//@Sql("/init-schema.sql")
 public class InitDatabaseTests {
 	@Autowired
     NewsDAO newsDAO;
@@ -27,6 +32,11 @@ public class InitDatabaseTests {
 	@Autowired
     UserDAO userDAO;
 
+	@Autowired
+    CommentDAO commentDAO;
+	
+	@Autowired
+	MessageService messageService;
     @Test
     public void initData() {
     	Random random=new Random();
@@ -51,9 +61,33 @@ public class InitDatabaseTests {
             news.setTitle(String.format("TITLE{%d}", i));
             news.setLink(String.format("http://www.nowcoder.com/%d.html", i));
             newsDAO.addNew(news);
+            
+            
+         // 给每个资讯插入3个评论
+            for(int j = 0; j < 3; ++j) {
+                Comment comment = new Comment();
+                comment.setUserId(i+1);
+                comment.setCreatedDate(new Date());
+                comment.setStatus(0);
+                comment.setContent("这里是一个评论啊！" + String.valueOf(j));
+                comment.setEntityId(news.getId());
+                comment.setEntityType(EntityType.ENTITY_NEWS);
+                commentDAO.addComment(comment);
+            }
     	}
     	
     	
+    }
+    
+    @Test
+    public void addMessage() {
+    	for(int i=2;i<10;i++) {
+    		for(int j=0;j<3;j++) {
+    			messageService.addMessage("接收"+i, 2, i+1);
+        		messageService.addMessage("发送"+i, i+1, 2);
+    		}
+    		
+    	}
     }
 
 }

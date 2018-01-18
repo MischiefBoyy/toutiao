@@ -31,4 +31,9 @@ public class NewsService {
 		return newsDAO.addNew(news);
 	}
 
+
+	public void updateLikeCount(int newsId, int likeCount) {
+		newsDAO.updateLikeCount(newsId, likeCount);
+	}
+
 }
